@@ -69,44 +69,43 @@ if (isset($_GET['edit']) && $_GET['edit'] === 'true') {
         rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #f8f9fa;
-        }
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #f8f9fa;
+    }
 
-        .container {
-            margin-top: 50px;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+        margin-top: 50px;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        h1 {
-            font-weight: 700;
-            font-size: 32px;
-            color: #333;
-        }
+    h1 {
+        font-weight: 700;
+        font-size: 32px;
+        color: #333;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
 
-        ul li {
-            margin-bottom: 10px;
-        }
+    ul li {
+        margin-bottom: 10px;
+    }
 
-        .btn-secondary {
-            background-color: #333;
-            color: #fff;
-            border: none;
-        }
+    .btn-secondary {
+        background-color: #333;
+        color: #fff;
+        border: none;
+    }
 
-        .btn-secondary:hover {
-            background-color: #555;
-        }
-
+    .btn-secondary:hover {
+        background-color: #555;
+    }
     </style>
 </head>
 
@@ -118,9 +117,15 @@ if (isset($_GET['edit']) && $_GET['edit'] === 'true') {
 
         <?php if ($editMode): ?>
         <!-- Edit Profile Section -->
-        <form method="post" action="update_profile.php">
+        <form method="post" action="update_profile.php" enctype="multipart/form-data">
             <!-- Add hidden input for std_id -->
             <input type="hidden" name="std_id" value="<?php echo $user_info['std_id']; ?>">
+
+            <!-- Add an input field for uploading a new profile image -->
+            <div class="form-group">
+                <label for="profile_image">อัปโหลดรูปโปรไฟล์:</label>
+                <input type="file" class="form-control-file" id="profile_image" name="profile_image">
+            </div>
 
             <div class="form-group">
                 <label for="std_Fname">ชื่อ:</label>
@@ -163,6 +168,13 @@ if (isset($_GET['edit']) && $_GET['edit'] === 'true') {
         </form>
         <?php else: ?>
         <!-- View Profile Section -->
+        <!-- Display the profile image -->
+        <?php if (!empty($user_info['profile_image'])): ?>
+        <img src="<?php echo $user_info['profile_image']; ?>" alt="Profile Image" class="img-thumbnail"
+            style="max-width: 200px;">
+        <?php else: ?>
+        <p>No profile image available.</p>
+        <?php endif; ?>
         <ul>
             <li><strong>ชื่อ:</strong> <?php echo $user_info['std_Fname']; ?></li>
             <li><strong>นามสกุล:</strong> <?php echo $user_info['std_Lname']; ?></li>

@@ -14,6 +14,8 @@ $userRole = isset($_SESSION['employee_email']) ? 'freelance' : 'member';
 <html lang="en">
 
 <head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -171,7 +173,7 @@ $userRole = isset($_SESSION['employee_email']) ? 'freelance' : 'member';
                     <!-- <h2 class="mb-4">Browse Topics</h2> -->
                 </div>
                 <div class="row">
-                    <?php
+                <?php
 include "db_connect.php";
 
 // Check if a job_id is provided in the URL
@@ -200,29 +202,29 @@ if (isset($_GET['id'])) {
         echo '<p>' . $row['job_description'] . '</p>';
         echo '<p>งบประมาณงาน: ' . $row['job_butget'] . '</p>';
         echo '<p>รหัสนิสิตฟรีแลนซ์: ' . $row['std_id'] . '</p>';
-        echo'<button class="view-profile-button" id="view-profile-button">ดูโปรไฟล์</button>';
-       
-            // Display a button to hire the freelancer
-            echo '<button class="hire-button" id="hire-button onclick="hireFreelancer()">จ้างงาน</button>';
-            
-            // Display "freelance" contact information (hidden by default)
-            echo '<div class="freelance-details" id="freelance-details" style="display:none;">';
-            echo '<h2>ข้อมูลติดต่อ Freelance</h2>';
+        echo '<a href="memfreepro.php?std_id=' . $row['std_id'] . '" class="view-profile-button" id="view-profile-button">ดูโปรไฟล์</a>';
 
-            // Fetch "freelance" data from the database
-            $freelance_sql = "SELECT * FROM freelance WHERE std_id = '{$row['std_id']}'";
-            $freelance_result = mysqli_query($connection, $freelance_sql);
 
-            if ($freelance_result && mysqli_num_rows($freelance_result) > 0) {
-                $freelance_row = mysqli_fetch_assoc($freelance_result);
-                echo '<p>ชื่อ: ' . $freelance_row['std_Fname'] . ' ' . $freelance_row['std_Lname'] . '</p>';
-                echo '<p>Email: ' . $freelance_row['std_email'] . '</p>';
-                echo '<p>เบอร์โทร: ' . $freelance_row['std_tel'] . '</p>';
-           
 
-            echo '</div>'; // Close "freelance-details" div
+        // Display a button to hire the freelancer
+        echo '<button class="hire-button" id="hire-button">จ้างงาน</button>';
+
+        // Display "freelance" contact information (hidden by default)
+        echo '<div class="freelance-details" id="freelance-details" style="display:none;">';
+        echo '<h2>ข้อมูลติดต่อ Freelance</h2>';
+
+        // Fetch "freelance" data from the database
+        $freelance_sql = "SELECT * FROM freelance WHERE std_id = '{$row['std_id']}'";
+        $freelance_result = mysqli_query($connection, $freelance_sql);
+
+        if ($freelance_result && mysqli_num_rows($freelance_result) > 0) {
+            $freelance_row = mysqli_fetch_assoc($freelance_result);
+            echo '<p>ชื่อ: ' . $freelance_row['std_Fname'] . ' ' . $freelance_row['std_Lname'] . '</p>';
+            echo '<p>Email: ' . $freelance_row['std_email'] . '</p>';
+            echo '<p>เบอร์โทร: ' . $freelance_row['std_tel'] . '</p>';
         }
 
+        echo '</div>'; // Close "freelance-details" div
         echo '</div>'; // Close "job-details" div
         echo '</div>'; // Close "container" div
     } else {
@@ -235,88 +237,68 @@ if (isset($_GET['id'])) {
 // Close the database connection
 mysqli_close($connection);
 ?>
+   <script>
+     // JavaScript to toggle the visibility of the "freelance-details" div
+const hireButton = document.getElementById('hire-button');
+const freelanceDetails = document.getElementById('freelance-details');
 
-                    <script>
-                    // JavaScript to toggle the visibility of the "freelance-details" div
-                    const hireButton = document.getElementById('hire-button');
-                    const freelanceDetails = document.getElementById('freelance-details');
+hireButton.addEventListener('click', function() {
+    if (freelanceDetails.style.display === 'none') {
+        freelanceDetails.style.display = 'block';
 
-                    hireButton.addEventListener('click', function() {
-                        if (freelanceDetails.style.display === 'none') {
-                            freelanceDetails.style.display = 'block';
-                        } else {
-                            freelanceDetails.style.display = 'none';
-                        }
-                    });
-                    </script>
-
-                    <script>
-                    // JavaScript to handle the "View Profile" button click
-                    const viewProfileButton = document.getElementById('view-profile-button');
-                    const stdId = <?php echo json_encode($row['std_id']); ?>;
-
-                    viewProfileButton.addEventListener('click', function() {
-                        // Redirect to memfreepro.php with the std_id query parameter
-                        window.location.href = 'memfreepro.php?std_id=' + stdId;
-                    });
-                    
-                    </script>
-   <?php
-include "db_connect.php";
-
-// Check if a job_id is provided in the URL
-if (isset($_GET['id'])) {
-    $job_id = $_GET['id'];
-
-    // Create an SQL query to fetch job data based on the provided job_id
-    $sql = "SELECT * FROM jobdata WHERE job_id = '$job_id'";
-
-    // Execute the SQL query
-    $result = mysqli_query($connection, $sql);
-
-    if (!$result) {
-        die("Query failed: " . mysqli_error($connection));
-    }
-
-    // Check if job data is found
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-
-        // Define variables for data transfer
-        $job_title = $row['job_title'];
-        $job_category = $row['job_category'];
-        $job_description = $row['job_description'];
-        $job_budget = $row['job_butget'];
-        $epm_status = 'ยังไม่ส่งมอบงาน';
-        $std_id = $row['std_id']; // Get the std_id from jobdata
-
-        // Create an SQL query to insert data into the epminfo table
-        $insert_sql = "INSERT INTO epminfo (epm_title, epm_jobname, epm_description, epm_butget, epm_status, std_id) VALUES ('$job_title', '$job_category', '$job_description', '$job_budget', '$epm_status', '$std_id')";
-
-        // Execute the SQL insert query
-        $insert_result = mysqli_query($connection, $insert_sql);
-
-        if ($insert_result) {
-            echo 'ข้อมูลงานถูกจัดเก็บเรียบร้อยแล้ว';
-        } else {
-            echo 'เกิดข้อผิดพลาดในการจัดเก็บข้อมูลงาน: ' . mysqli_error($connection);
-        }
+        // Send an AJAX request to insert job data into the database
+        insertJobData();
     } else {
-        echo 'ไม่พบข้อมูลงานที่คุณค้นหา';
+        freelanceDetails.style.display = 'none';
     }
-} else {
-    echo 'ไม่มีรหัสงานที่ระบุ';
+});
+
+// Function to insert job data into the database using AJAX
+function insertJobData() {
+    // Get job data from the page
+    const jobTitle = '<?php echo $row['job_title']; ?>';
+    const jobCategory = '<?php echo $row['job_category']; ?>';
+    const jobDescription = '<?php echo $row['job_description']; ?>';
+    const jobBudget = '<?php echo $row['job_butget']; ?>';
+    const stdId = '<?php echo $row['std_id']; ?>';
+
+    // Retrieve employee_id from PHP session
+    const employeeId = '<?php echo $_SESSION['employee_id']; ?>';
+
+    // Create a data object to send in the POST request
+    const data = {
+        job_title: jobTitle,
+        job_category: jobCategory,
+        job_description: jobDescription,
+        job_budget: jobBudget,
+        std_id: stdId,
+        employee_id: employeeId // Add employee_id to the data object
+    };
+
+    // Send a POST request to insert_job_data.php
+    fetch('insert_job_data.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'success') {
+            alert('ข้อมูลงานถูกจัดเก็บเรียบร้อยแล้ว');
+        } else {
+            alert('เกิดข้อผิดพลาดในการจัดเก็บข้อมูลงาน');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
-// Close the database connection
-mysqli_close($connection);
-?>
-
-
-
-
+    </script>
+</main>
 
     </main>
 </body>
-
 </html>

@@ -90,7 +90,7 @@ if (isset($user_id)) {
                 <a href="#" class="dropbtn"><span>ยินดีต้อนรับคุณ> <?php echo $user_name; ?></span></a>
                 <div class="dropdown-content">
                     <a href="freelanceprofile.php">แก้ไขโปรไฟล์</a>
-                    <a href="#">Item 2</a>
+                    <a href="freelancehistoryinfo.php">สถานะการจ้างงาน</a>
                     <a href="#">Item 3</a>
                 </div>
             </li>

@@ -60,7 +60,7 @@ if (isset($user_id)) {
     <ul>
         <li><a class="active" href="memberindex.php">Home</a></li>
         <li><a href="#">บอร์ดประกาศงาน</a></li>
-        <li><a href="#">ประวัติการประกาศงาน</a></li>
+        <li><a href="memhistoryinfo.php">ประวัติการจ้างงาน</a></li>
         <li class="dropdown">
     <a href="#" class="dropbtn"><span>หมวดหมู่</span></a>
     <div class="dropdown-content">
@@ -88,7 +88,7 @@ if (isset($user_id)) {
                 <a href="#" class="dropbtn"><span>ยินดีต้อนรับสมาชิก : <?php echo $user_name; ?></span></a>
                 <div class="dropdown-content">
                     <a href="memberprofile.php">แก้ไขโปรไฟล์</a>
-                    <a href="#">Item 2</a>
+                    <a href="rating.php">รีวิว</a>
                     <a href="#">Item 3</a>
                 </div>
             </li>
